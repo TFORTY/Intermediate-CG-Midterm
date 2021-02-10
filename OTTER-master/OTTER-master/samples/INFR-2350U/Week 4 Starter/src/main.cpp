@@ -45,10 +45,10 @@ int main() {
 	// Push another scope so most memory should be freed *before* we exit the app
 	{
 		#pragma region Shader and ImGui
-		Shader::sptr passthroughShader = Shader::Create();
+		/*Shader::sptr passthroughShader = Shader::Create();
 		passthroughShader->LoadShaderPartFromFile("shaders/passthrough_vert.glsl", GL_VERTEX_SHADER);
 		passthroughShader->LoadShaderPartFromFile("shaders/passthrough_frag.glsl", GL_FRAGMENT_SHADER);
-		passthroughShader->Link();
+		passthroughShader->Link();*/
 
 		// Load our shaders
 		Shader::sptr shader = Shader::Create();
@@ -77,19 +77,18 @@ int main() {
 		shader->SetUniform("u_LightAttenuationLinear", lightLinearFalloff);
 		shader->SetUniform("u_LightAttenuationQuadratic", lightQuadraticFalloff);
 
-		PostEffect* basicEffect;
+		/*PostEffect* basicEffect;
 
 		int activeEffect = 0;
 		std::vector<PostEffect*> effects;
 
 		SepiaEffect* sepiaEffect;
 		GreyscaleEffect* greyscaleEffect;
-		ColorCorrectEffect* colorCorrectEffect;
+		ColorCorrectEffect* colorCorrectEffect;*/
 		
-
 		// We'll add some ImGui controls to control our shader
 		BackendHandler::imGuiCallbacks.push_back([&]() {
-			if (ImGui::CollapsingHeader("Effect controls"))
+			/*if (ImGui::CollapsingHeader("Effect controls"))
 			{
 				ImGui::SliderInt("Chosen Effect", &activeEffect, 0, effects.size() - 1);
 
@@ -137,7 +136,7 @@ int main() {
 				{
 					EnvironmentGenerator::RegenerateEnvironment();
 				}
-			}
+			}*/
 			if (ImGui::CollapsingHeader("Scene Level Lighting Settings"))
 			{
 				if (ImGui::ColorPicker3("Ambient Color", glm::value_ptr(ambientCol))) {
@@ -202,10 +201,10 @@ int main() {
 		Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
 		Texture2D::sptr grass = Texture2D::LoadFromFile("images/grass.jpg");
 		Texture2D::sptr noSpec = Texture2D::LoadFromFile("images/grassSpec.png");
-		Texture2D::sptr box = Texture2D::LoadFromFile("images/box.bmp");
+		/*Texture2D::sptr box = Texture2D::LoadFromFile("images/box.bmp");
 		Texture2D::sptr boxSpec = Texture2D::LoadFromFile("images/box-reflections.bmp");
 		Texture2D::sptr simpleFlora = Texture2D::LoadFromFile("images/SimpleFlora.png");
-		LUT3D testCube("cubes/BrightenedCorrection.cube");
+		LUT3D testCube("cubes/BrightenedCorrection.cube");*/
 
 		// Load the cube map
 		//TextureCubeMap::sptr environmentMap = TextureCubeMap::LoadFromImages("images/cubemaps/skybox/sample.jpg");
@@ -253,7 +252,7 @@ int main() {
 		grassMat->Set("u_Shininess", 2.0f);
 		grassMat->Set("u_TextureMix", 0.0f);
 
-		ShaderMaterial::sptr boxMat = ShaderMaterial::Create();
+		/*ShaderMaterial::sptr boxMat = ShaderMaterial::Create();
 		boxMat->Shader = shader;
 		boxMat->Set("s_Diffuse", box);
 		boxMat->Set("s_Specular", boxSpec);
@@ -265,7 +264,7 @@ int main() {
 		simpleFloraMat->Set("s_Diffuse", simpleFlora);
 		simpleFloraMat->Set("s_Specular", noSpec);
 		simpleFloraMat->Set("u_Shininess", 8.0f);
-		simpleFloraMat->Set("u_TextureMix", 0.0f);
+		simpleFloraMat->Set("u_TextureMix", 0.0f);*/
 
 		GameObject obj1 = scene->CreateEntity("Ground"); 
 		{
@@ -282,7 +281,7 @@ int main() {
 			BehaviourBinding::BindDisabled<SimpleMoveBehaviour>(obj2);
 		}
 
-		std::vector<glm::vec2> allAvoidAreasFrom = { glm::vec2(-4.0f, -4.0f) };
+		/*std::vector<glm::vec2> allAvoidAreasFrom = { glm::vec2(-4.0f, -4.0f) };
 		std::vector<glm::vec2> allAvoidAreasTo = { glm::vec2(4.0f, 4.0f) };
 
 		std::vector<glm::vec2> rockAvoidAreasFrom = { glm::vec2(-3.0f, -3.0f), glm::vec2(-19.0f, -19.0f), glm::vec2(5.0f, -19.0f),
@@ -298,7 +297,7 @@ int main() {
 			spawnFromHere, spawnToHere, allAvoidAreasFrom, allAvoidAreasTo);
 		EnvironmentGenerator::AddObjectToGeneration("models/simpleRock.obj", simpleFloraMat, 40,
 			spawnFromHere, spawnToHere, rockAvoidAreasFrom, rockAvoidAreasTo);
-		EnvironmentGenerator::GenerateEnvironment();
+		EnvironmentGenerator::GenerateEnvironment();*/
 
 		// Create an object to be our camera
 		GameObject cameraObject = scene->CreateEntity("Camera");
@@ -315,7 +314,7 @@ int main() {
 			BehaviourBinding::Bind<CameraControlBehaviour>(cameraObject);
 		}
 
-		int width, height;
+		/*int width, height;
 		glfwGetWindowSize(BackendHandler::window, &width, &height);
 
 		GameObject framebufferObject = scene->CreateEntity("Basic Effect");
@@ -343,7 +342,7 @@ int main() {
 			colorCorrectEffect = &colorCorrectEffectObject.emplace<ColorCorrectEffect>();
 			colorCorrectEffect->Init(width, height);
 		}
-		effects.push_back(colorCorrectEffect);
+		effects.push_back(colorCorrectEffect);*/
 
 		#pragma endregion 
 		//////////////////////////////////////////////////////////////////////////////////////////
@@ -447,14 +446,13 @@ int main() {
 			});
 
 			// Clear the screen
-			basicEffect->Clear();
+			//basicEffect->Clear();
 			/*greyscaleEffect->Clear();
 			sepiaEffect->Clear();*/
-			for (int i = 0; i < effects.size(); i++)
+			/*for (int i = 0; i < effects.size(); i++)
 			{
 				effects[i]->Clear();
-			}
-
+			}*/
 
 			glClearColor(0.08f, 0.17f, 0.31f, 1.0f);
 			glEnable(GL_DEPTH_TEST);
@@ -494,7 +492,7 @@ int main() {
 			Shader::sptr current = nullptr;
 			ShaderMaterial::sptr currentMat = nullptr;
 
-			basicEffect->BindBuffer(0);
+			//basicEffect->BindBuffer(0);
 
 			// Iterate over the render group components and draw them
 			renderGroup.each( [&](entt::entity e, RendererComponent& renderer, Transform& transform) {
@@ -513,12 +511,12 @@ int main() {
 				BackendHandler::RenderVAO(renderer.Material->Shader, renderer.Mesh, viewProjection, transform);
 			});
 
-			basicEffect->UnbindBuffer();
+			//basicEffect->UnbindBuffer();
 
-			effects[activeEffect]->ApplyEffect(basicEffect);
+			//effects[activeEffect]->ApplyEffect(basicEffect);
 			
-			effects[activeEffect]->DrawToScreen();
-			
+			//effects[activeEffect]->DrawToScreen();
+		
 			// Draw our ImGui content
 			BackendHandler::RenderImGui();
 
@@ -530,7 +528,7 @@ int main() {
 		// Nullify scene so that we can release references
 		Application::Instance().ActiveScene = nullptr;
 		//Clean up the environment generator so we can release references
-		EnvironmentGenerator::CleanUpPointers();
+		//EnvironmentGenerator::CleanUpPointers();
 		BackendHandler::ShutdownImGui();
 	}	
 
