@@ -191,14 +191,14 @@ int main() {
 
 		// GL states
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+		//glEnable(GL_CULL_FACE);
 		glDepthFunc(GL_LEQUAL); // New 
 
 		#pragma region TEXTURE LOADING
 
 		// Load some textures from files
-		//Texture2D::sptr stone = Texture2D::LoadFromFile("images/Stone_001_Diffuse.png");
-		//Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
+		Texture2D::sptr stone = Texture2D::LoadFromFile("images/Stone_001_Diffuse.png");
+		Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
 		Texture2D::sptr grass = Texture2D::LoadFromFile("images/grass.jpg");
 		Texture2D::sptr noSpec = Texture2D::LoadFromFile("images/grassSpec.png");
 		/*Texture2D::sptr box = Texture2D::LoadFromFile("images/box.bmp");
@@ -240,12 +240,12 @@ int main() {
 			scene->Registry().group<RendererComponent>(entt::get_t<Transform>());
 
 		// Create a material and set some properties for it
-		/*ShaderMaterial::sptr stoneMat = ShaderMaterial::Create();  
+		ShaderMaterial::sptr stoneMat = ShaderMaterial::Create();  
 		stoneMat->Shader = shader;
 		stoneMat->Set("s_Diffuse", stone);
 		stoneMat->Set("s_Specular", stoneSpec);
 		stoneMat->Set("u_Shininess", 2.0f);
-		stoneMat->Set("u_TextureMix", 0.0f); */
+		stoneMat->Set("u_TextureMix", 0.0f); 
 
 		ShaderMaterial::sptr grassMat = ShaderMaterial::Create();
 		grassMat->Shader = shader;
@@ -284,14 +284,14 @@ int main() {
 			obj1.emplace<RendererComponent>().SetMesh(vao).SetMaterial(grassMat);
 		}
 
-		/*GameObject obj2 = scene->CreateEntity("monkey_quads");
+		GameObject obj2 = scene->CreateEntity("monkey_quads");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/monkey_quads.obj");
 			obj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(stoneMat);
 			obj2.get<Transform>().SetLocalPosition(0.0f, 0.0f, 2.0f);
 			obj2.get<Transform>().SetLocalRotation(0.0f, 0.0f, -90.0f);
 			BehaviourBinding::BindDisabled<SimpleMoveBehaviour>(obj2);
-		}*/
+		}
 
 		GameObject obj3 = scene->CreateEntity("House");
 		{
