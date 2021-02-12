@@ -197,8 +197,8 @@ int main() {
 		#pragma region TEXTURE LOADING
 
 		// Load some textures from files
-		Texture2D::sptr stone = Texture2D::LoadFromFile("images/Stone_001_Diffuse.png");
-		Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
+		//Texture2D::sptr stone = Texture2D::LoadFromFile("images/Stone_001_Diffuse.png");
+		//Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
 		Texture2D::sptr grass = Texture2D::LoadFromFile("images/grass.jpg");
 		Texture2D::sptr noSpec = Texture2D::LoadFromFile("images/grassSpec.png");
 		/*Texture2D::sptr box = Texture2D::LoadFromFile("images/box.bmp");
@@ -207,6 +207,8 @@ int main() {
 		LUT3D testCube("cubes/BrightenedCorrection.cube");*/
 
 		Texture2D::sptr house = Texture2D::LoadFromFile("images/houseTex.png");
+		Texture2D::sptr barrel = Texture2D::LoadFromFile("images/wood.jpg");
+		Texture2D::sptr barrelNormal = Texture2D::LoadFromFile("images/woodNormal.jpg");
 
 		// Load the cube map
 		//TextureCubeMap::sptr environmentMap = TextureCubeMap::LoadFromImages("images/cubemaps/skybox/sample.jpg");
@@ -240,12 +242,12 @@ int main() {
 			scene->Registry().group<RendererComponent>(entt::get_t<Transform>());
 
 		// Create a material and set some properties for it
-		ShaderMaterial::sptr stoneMat = ShaderMaterial::Create();  
+		/*ShaderMaterial::sptr stoneMat = ShaderMaterial::Create();  
 		stoneMat->Shader = shader;
 		stoneMat->Set("s_Diffuse", stone);
 		stoneMat->Set("s_Specular", stoneSpec);
 		stoneMat->Set("u_Shininess", 2.0f);
-		stoneMat->Set("u_TextureMix", 0.0f); 
+		stoneMat->Set("u_TextureMix", 0.0f); */
 
 		ShaderMaterial::sptr grassMat = ShaderMaterial::Create();
 		grassMat->Shader = shader;
@@ -263,6 +265,12 @@ int main() {
 		houseMat->Shader = shader;
 		houseMat->Set("s_Diffuse", house);
 		houseMat->Set("u_Shininess", 2.0f);
+
+		ShaderMaterial::sptr barrelMat = ShaderMaterial::Create();
+		barrelMat->Shader = shader;
+		barrelMat->Set("s_Diffuse", barrel);
+		barrelMat->Set("s_Diffuse2", barrelNormal);
+		barrelMat->Set("u_Shininess", 2.0f);
 
 		/*ShaderMaterial::sptr boxMat = ShaderMaterial::Create();
 		boxMat->Shader = shader;
@@ -284,14 +292,14 @@ int main() {
 			obj1.emplace<RendererComponent>().SetMesh(vao).SetMaterial(grassMat);
 		}
 
-		GameObject obj2 = scene->CreateEntity("monkey_quads");
+		/*GameObject obj2 = scene->CreateEntity("monkey_quads");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/monkey_quads.obj");
 			obj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(stoneMat);
 			obj2.get<Transform>().SetLocalPosition(0.0f, 0.0f, 2.0f);
 			obj2.get<Transform>().SetLocalRotation(0.0f, 0.0f, -90.0f);
 			BehaviourBinding::BindDisabled<SimpleMoveBehaviour>(obj2);
-		}
+		}*/
 
 		GameObject obj3 = scene->CreateEntity("House");
 		{
@@ -299,6 +307,15 @@ int main() {
 			obj3.emplace<RendererComponent>().SetMesh(vao).SetMaterial(houseMat);
 			obj3.get<Transform>().SetLocalPosition(0.0f, -16.0f, 0.1f);
 			obj3.get<Transform>().SetLocalRotation(90.0f, 0.0f, 180.0f);
+		}
+
+		GameObject obj4 = scene->CreateEntity("Barrel");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/barrel.obj");
+			obj4.emplace<RendererComponent>().SetMesh(vao).SetMaterial(barrelMat);
+			obj4.get<Transform>().SetLocalPosition(0.0f, 0.0f, 1.0f);
+			obj4.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
+			obj4.get<Transform>().SetLocalScale(glm::vec3(0.2f));
 		}
 
 		/*std::vector<glm::vec2> allAvoidAreasFrom = { glm::vec2(-4.0f, -4.0f) };
