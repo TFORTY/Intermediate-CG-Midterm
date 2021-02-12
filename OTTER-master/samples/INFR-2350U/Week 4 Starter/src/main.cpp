@@ -30,8 +30,8 @@ int main() {
 	int frameIx = 0;
 	float fpsBuffer[128];
 	float minFps, maxFps, avgFps;
-	int selectedVao = 0; // select cube by default
-	std::vector<GameObject> controllables;
+	//int selectedVao = 0; // select cube by default
+	//std::vector<GameObject> controllables;
 
 	BackendHandler::InitAll();
 
@@ -168,10 +168,10 @@ int main() {
 				}
 			}
 
-			auto name = controllables[selectedVao].get<GameObjectTag>().Name;
-			ImGui::Text(name.c_str());
-			auto behaviour = BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao]);
-			ImGui::Checkbox("Relative Rotation", &behaviour->Relative);
+			//auto name = controllables[selectedVao].get<GameObjectTag>().Name;
+			//ImGui::Text(name.c_str());
+			//auto behaviour = BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao]);
+			//ImGui::Checkbox("Relative Rotation", &behaviour->Relative);
 
 			ImGui::Text("Q/E -> Yaw\nLeft/Right -> Roll\nUp/Down -> Pitch\nY -> Toggle Mode");
 		
@@ -197,14 +197,16 @@ int main() {
 		#pragma region TEXTURE LOADING
 
 		// Load some textures from files
-		Texture2D::sptr stone = Texture2D::LoadFromFile("images/Stone_001_Diffuse.png");
-		Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
+		//Texture2D::sptr stone = Texture2D::LoadFromFile("images/Stone_001_Diffuse.png");
+		//Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
 		Texture2D::sptr grass = Texture2D::LoadFromFile("images/grass.jpg");
 		Texture2D::sptr noSpec = Texture2D::LoadFromFile("images/grassSpec.png");
 		/*Texture2D::sptr box = Texture2D::LoadFromFile("images/box.bmp");
 		Texture2D::sptr boxSpec = Texture2D::LoadFromFile("images/box-reflections.bmp");
 		Texture2D::sptr simpleFlora = Texture2D::LoadFromFile("images/SimpleFlora.png");
 		LUT3D testCube("cubes/BrightenedCorrection.cube");*/
+
+		Texture2D::sptr house = Texture2D::LoadFromFile("images/houseTex.png");
 
 		// Load the cube map
 		//TextureCubeMap::sptr environmentMap = TextureCubeMap::LoadFromImages("images/cubemaps/skybox/sample.jpg");
@@ -238,12 +240,12 @@ int main() {
 			scene->Registry().group<RendererComponent>(entt::get_t<Transform>());
 
 		// Create a material and set some properties for it
-		ShaderMaterial::sptr stoneMat = ShaderMaterial::Create();  
+		/*ShaderMaterial::sptr stoneMat = ShaderMaterial::Create();  
 		stoneMat->Shader = shader;
 		stoneMat->Set("s_Diffuse", stone);
 		stoneMat->Set("s_Specular", stoneSpec);
 		stoneMat->Set("u_Shininess", 2.0f);
-		stoneMat->Set("u_TextureMix", 0.0f); 
+		stoneMat->Set("u_TextureMix", 0.0f); */
 
 		ShaderMaterial::sptr grassMat = ShaderMaterial::Create();
 		grassMat->Shader = shader;
@@ -256,6 +258,11 @@ int main() {
 		noTex->Shader = shader;
 		noTex->Set("s_Diffuse", texture2);
 		noTex->Set("u_Shininess", 2.0f);
+
+		ShaderMaterial::sptr houseMat = ShaderMaterial::Create();
+		houseMat->Shader = shader;
+		houseMat->Set("s_Diffuse", house);
+		houseMat->Set("u_Shininess", 2.0f);
 
 		/*ShaderMaterial::sptr boxMat = ShaderMaterial::Create();
 		boxMat->Shader = shader;
@@ -277,13 +284,21 @@ int main() {
 			obj1.emplace<RendererComponent>().SetMesh(vao).SetMaterial(grassMat);
 		}
 
-		GameObject obj2 = scene->CreateEntity("monkey_quads");
+		/*GameObject obj2 = scene->CreateEntity("monkey_quads");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/monkey_quads.obj");
 			obj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(stoneMat);
 			obj2.get<Transform>().SetLocalPosition(0.0f, 0.0f, 2.0f);
 			obj2.get<Transform>().SetLocalRotation(0.0f, 0.0f, -90.0f);
 			BehaviourBinding::BindDisabled<SimpleMoveBehaviour>(obj2);
+		}*/
+
+		GameObject obj3 = scene->CreateEntity("House");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/house.obj");
+			obj3.emplace<RendererComponent>().SetMesh(vao).SetMaterial(houseMat);
+			obj3.get<Transform>().SetLocalPosition(0.0f, -16.0f, 0.1f);
+			obj3.get<Transform>().SetLocalRotation(90.0f, 0.0f, 180.0f);
 		}
 
 		/*std::vector<glm::vec2> allAvoidAreasFrom = { glm::vec2(-4.0f, -4.0f) };
@@ -387,7 +402,7 @@ int main() {
 			// use std::bind
 			keyToggles.emplace_back(GLFW_KEY_T, [&]() { cameraObject.get<Camera>().ToggleOrtho(); });
 
-			controllables.push_back(obj2);
+			/*controllables.push_back(obj2);
 
 			keyToggles.emplace_back(GLFW_KEY_KP_ADD, [&]() {
 				BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao])->Enabled = false;
@@ -407,7 +422,7 @@ int main() {
 			keyToggles.emplace_back(GLFW_KEY_Y, [&]() {
 				auto behaviour = BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao]);
 				behaviour->Relative = !behaviour->Relative;
-				});
+				});*/
 		}
 
 		// Initialize our timing instance and grab a reference for our use
