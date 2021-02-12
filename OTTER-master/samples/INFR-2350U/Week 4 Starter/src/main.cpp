@@ -252,6 +252,11 @@ int main() {
 		grassMat->Set("u_Shininess", 2.0f);
 		grassMat->Set("u_TextureMix", 0.0f);
 
+		ShaderMaterial::sptr noTex = ShaderMaterial::Create();
+		noTex->Shader = shader;
+		noTex->Set("s_Diffuse", texture2);
+		noTex->Set("u_Shininess", 2.0f);
+
 		/*ShaderMaterial::sptr boxMat = ShaderMaterial::Create();
 		boxMat->Shader = shader;
 		boxMat->Set("s_Diffuse", box);
