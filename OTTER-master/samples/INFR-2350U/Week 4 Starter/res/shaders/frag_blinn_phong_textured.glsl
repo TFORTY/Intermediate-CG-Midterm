@@ -27,6 +27,8 @@ uniform float u_TextureMix;
 
 uniform vec3  u_CamPos;
 
+uniform int u_Condition;
+
 out vec4 frag_color;
 
 // https://learnopengl.com/Advanced-Lighting/Advanced-Lighting
@@ -62,10 +64,43 @@ void main() {
 	vec4 textureColor2 = texture(s_Diffuse2, inUV);
 	vec4 textureColor = mix(textureColor1, textureColor2, u_TextureMix);
 
-	vec3 result = (
-		(u_AmbientCol * u_AmbientStrength) + // global ambient light
-		(ambient + diffuse + specular) * attenuation // light factors from our single light
-		) * inColor * textureColor.rgb; // Object color
+	vec3 result;
+
+	switch(u_Condition)
+	{
+		//No Lighting
+		case 0:
+			result = inColor * textureColor.rgb;
+			break;
+
+		//Ambient Lighting Only
+		case 1:
+			result = (
+			(u_AmbientCol * u_AmbientLightStrength) + 
+			(ambient) * attenuation
+			) * inColor * textureColor.rgb;
+			break;
+
+		//Specular Lighting Only
+		case 2:
+			result = (
+			(specular) * attenuation
+			) * inColor * textureColor.rgb;
+			break;
+
+		//Ambient + Specular + Diffuse Lighting
+		case 3:
+			result = (
+			(u_AmbientCol * u_AmbientLightStrength) + 
+			(ambient + diffuse + specular) * attenuation
+			) * inColor * textureColor.rgb;
+			break;
+	}
+
+//	vec3 result = (
+//		(u_AmbientCol * u_AmbientStrength) + // global ambient light
+//		(ambient + diffuse + specular) * attenuation // light factors from our single light
+//		) * inColor * textureColor.rgb; // Object color
 
 	frag_color = vec4(result, textureColor.a);
 }

@@ -33,7 +33,8 @@ int main() {
 	//int selectedVao = 0; // select cube by default
 	//std::vector<GameObject> controllables;
 
-	bool toggleTextures = false;
+	bool isTexturesToggled = true;
+	int toggleMode = 3;
 
 	BackendHandler::InitAll();
 
@@ -67,6 +68,8 @@ int main() {
 		float     lightLinearFalloff = 0.09f;
 		float     lightQuadraticFalloff = 0.032f;
 
+		int condition = 3;
+
 		// These are our application / scene level uniforms that don't necessarily update
 		// every frame
 		shader->SetUniform("u_LightPos", lightPos);
@@ -78,6 +81,8 @@ int main() {
 		shader->SetUniform("u_LightAttenuationConstant", 1.0f);
 		shader->SetUniform("u_LightAttenuationLinear", lightLinearFalloff);
 		shader->SetUniform("u_LightAttenuationQuadratic", lightQuadraticFalloff);
+
+		shader->SetUniform("u_Condition", condition);
 
 		/*PostEffect* basicEffect;
 
@@ -91,14 +96,77 @@ int main() {
 		// We'll add some ImGui controls to control our shader
 		BackendHandler::imGuiCallbacks.push_back([&]() {
 
-			if (ImGui::CollapsingHeader("Basic Lighting"))
+			if (ImGui::CollapsingHeader("Toggles"))
 			{
+				//Toggles on no lighting
+				if (ImGui::Button("No Lighting"))
+				{
+					toggleMode = 0;
+					shader->SetUniform("u_Condition", 0); 
+				}
+				//Toggles on ambient lighting only
+				if (ImGui::Button("Ambient Only"))
+				{
+					toggleMode = 1;
+					shader->SetUniform("u_Condition", 1);
+				}
+				//Toggles on specular lighting only
+				if (ImGui::Button("Specular Only"))
+				{
+					toggleMode = 2;
+					shader->SetUniform("u_Condition", 2);
+				}
+				//Toggles on ambient + specular + diffuse lighitng (DEFAULT)
+				if (ImGui::Button("Ambient + Specular + Diffuse"))
+				{
+					toggleMode = 3;
+					shader->SetUniform("u_Condition", 3);
+				}
+				//Toggles on the lighting with bloom effect
+				if (ImGui::Button("Ambient + Specular + Diffuse + Bloom"))
+				{
 
-			}
+				}
+				//Displays which lighting toggle is on
+				ImGui::Text("Lighting Toggle: ", toggleMode);
+				if (toggleMode == 0)
+				{
+					ImGui::SameLine(0.0f, 1.0f);
+					ImGui::Text("No Lighting");
+				}
+				else if (toggleMode == 1)
+				{
+					ImGui::SameLine(0.0f, 1.0f);
+					ImGui::Text("Ambient Lighting");
+				}
+				else if (toggleMode == 2)
+				{
+					ImGui::SameLine(0.0f, 1.0f);
+					ImGui::Text("Specular Lighting");
+				}
+				else if (toggleMode == 3)
+				{
+					ImGui::SameLine(0.0f, 1.0f);
+					ImGui::Text("Ambient + Specular + Diffuse");
+				}
+				//Toggles textures on/off
+				if (ImGui::Button("Toggle Textures"))
+				{
+					isTexturesToggled = !isTexturesToggled;
+				}	
+				//Text to clearly display whether textures are on or off
+				ImGui::Text("Texture Toggled: ", isTexturesToggled);
 
-			if (ImGui::Button("Toggle Textures"))
-			{
-				toggleTextures = true;
+				if (isTexturesToggled)
+				{
+					ImGui::SameLine(0.0f, 1.0f);
+					ImGui::Text("ON");
+				}
+				else
+				{
+					ImGui::SameLine(0.0f, 1.0f);
+					ImGui::Text("OFF");
+				}
 			}
 
 			/*if (ImGui::CollapsingHeader("Effect controls"))
@@ -150,7 +218,8 @@ int main() {
 					EnvironmentGenerator::RegenerateEnvironment();
 				}
 			}*/
-			if (ImGui::CollapsingHeader("Scene Level Lighting Settings"))
+
+			/*if (ImGui::CollapsingHeader("Scene Level Lighting Settings"))
 			{
 				if (ImGui::ColorPicker3("Ambient Color", glm::value_ptr(ambientCol))) {
 					shader->SetUniform("u_AmbientCol", ambientCol);
@@ -179,7 +248,7 @@ int main() {
 				if (ImGui::DragFloat("Light Quadratic Falloff", &lightQuadraticFalloff, 0.01f, 0.0f, 1.0f)) {
 					shader->SetUniform("u_LightAttenuationQuadratic", lightQuadraticFalloff);
 				}
-			}
+			}*/
 
 			//auto name = controllables[selectedVao].get<GameObjectTag>().Name;
 			//ImGui::Text(name.c_str());
@@ -268,18 +337,18 @@ int main() {
 		stoneMat->Set("u_Shininess", 2.0f);
 		stoneMat->Set("u_TextureMix", 0.0f); */
 
+		ShaderMaterial::sptr noTex = ShaderMaterial::Create();
+		noTex->Shader = shader;
+		noTex->Set("s_Diffuse", texture2);
+		noTex->Set("u_Shininess", 2.0f);
+		noTex->Set("u_TextureMix", 0.0f);
+
 		ShaderMaterial::sptr grassMat = ShaderMaterial::Create();
 		grassMat->Shader = shader;
 		grassMat->Set("s_Diffuse", grass);
 		grassMat->Set("s_Specular", noSpec);
 		grassMat->Set("u_Shininess", 2.0f);
 		grassMat->Set("u_TextureMix", 0.0f);
-
-		ShaderMaterial::sptr noTex = ShaderMaterial::Create();
-		noTex->Shader = shader;
-		noTex->Set("s_Diffuse", texture2);
-		noTex->Set("u_Shininess", 2.0f);
-		noTex->Set("u_TextureMix", 0.0f);
 
 		ShaderMaterial::sptr houseMat = ShaderMaterial::Create();
 		houseMat->Shader = shader;
@@ -562,10 +631,27 @@ int main() {
 				}
 			}
 
-			if (toggleTextures)
+			//Changes the diffuse material to be no texture
+			if (!isTexturesToggled)
 			{
-				//obj1.emplace<RendererComponent>().SetMesh(vao).SetMaterial(grassMat);
 				grassMat->Set("s_Diffuse", texture2);
+				houseMat->Set("s_Diffuse", texture2);
+				barrelMat->Set("s_Diffuse", texture2);
+				treeMat->Set("s_Diffuse", texture2);
+				strawMat->Set("s_Diffuse", texture2);		
+				swordMat->Set("s_Diffuse", texture2);		
+				horseMat->Set("s_Diffuse", texture2);		
+			}
+			//Returns the difuse material to its original texture
+			else
+			{
+				grassMat->Set("s_Diffuse", grass);
+				houseMat->Set("s_Diffuse", house);
+				barrelMat->Set("s_Diffuse", barrel);
+				treeMat->Set("s_Diffuse", tree);
+				strawMat->Set("s_Diffuse", straw);
+				swordMat->Set("s_Diffuse", sword);
+				horseMat->Set("s_Diffuse", horse);
 			}
 
 			// Iterate over all the behaviour binding components
