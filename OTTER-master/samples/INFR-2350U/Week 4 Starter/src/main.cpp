@@ -209,6 +209,12 @@ int main() {
 		Texture2D::sptr house = Texture2D::LoadFromFile("images/houseTex.png");
 		Texture2D::sptr barrel = Texture2D::LoadFromFile("images/wood.jpg");
 		Texture2D::sptr barrelNormal = Texture2D::LoadFromFile("images/woodNormal.jpg");
+		Texture2D::sptr tree = Texture2D::LoadFromFile("images/tree.png");
+		Texture2D::sptr straw = Texture2D::LoadFromFile("images/straw.jpg");
+		Texture2D::sptr strawBump = Texture2D::LoadFromFile("images/strawBump.jpg");
+		Texture2D::sptr sword = Texture2D::LoadFromFile("images/swordTex.png");
+		Texture2D::sptr swordNormal = Texture2D::LoadFromFile("images/swordNormal.png");
+		Texture2D::sptr horse = Texture2D::LoadFromFile("images/horse.jpg");
 
 		// Load the cube map
 		//TextureCubeMap::sptr environmentMap = TextureCubeMap::LoadFromImages("images/cubemaps/skybox/sample.jpg");
@@ -260,17 +266,46 @@ int main() {
 		noTex->Shader = shader;
 		noTex->Set("s_Diffuse", texture2);
 		noTex->Set("u_Shininess", 2.0f);
+		noTex->Set("u_TextureMix", 0.0f);
 
 		ShaderMaterial::sptr houseMat = ShaderMaterial::Create();
 		houseMat->Shader = shader;
 		houseMat->Set("s_Diffuse", house);
 		houseMat->Set("u_Shininess", 2.0f);
+		houseMat->Set("u_TextureMix", 0.0f);
 
 		ShaderMaterial::sptr barrelMat = ShaderMaterial::Create();
 		barrelMat->Shader = shader;
 		barrelMat->Set("s_Diffuse", barrel);
 		barrelMat->Set("s_Diffuse2", barrelNormal);
 		barrelMat->Set("u_Shininess", 2.0f);
+		barrelMat->Set("u_TextureMix", 0.25f);
+
+		ShaderMaterial::sptr treeMat = ShaderMaterial::Create();
+		treeMat->Shader = shader;
+		treeMat->Set("s_Diffuse", tree);
+		treeMat->Set("u_Shininess", 2.0f);
+		treeMat->Set("u_TextureMix", 0.0f);
+
+		ShaderMaterial::sptr strawMat = ShaderMaterial::Create();
+		strawMat->Shader = shader;
+		strawMat->Set("s_Diffuse", straw);
+		strawMat->Set("s_Diffuse2", strawBump);
+		strawMat->Set("u_Shininess", 2.0f);
+		strawMat->Set("u_TextureMix", 0.25f);
+
+		ShaderMaterial::sptr swordMat = ShaderMaterial::Create();
+		swordMat->Shader = shader;
+		swordMat->Set("s_Diffuse", sword);
+		swordMat->Set("s_Diffuse2", swordNormal);
+		swordMat->Set("u_Shininess", 2.0f);
+		swordMat->Set("u_TextureMix", 0.25f);
+
+		ShaderMaterial::sptr horseMat = ShaderMaterial::Create();
+		horseMat->Shader = shader;
+		horseMat->Set("s_Diffuse", horse);
+		horseMat->Set("u_Shininess", 2.0f);
+		horseMat->Set("u_TextureMix", 0.0f);
 
 		/*ShaderMaterial::sptr boxMat = ShaderMaterial::Create();
 		boxMat->Shader = shader;
@@ -313,9 +348,51 @@ int main() {
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/barrel.obj");
 			obj4.emplace<RendererComponent>().SetMesh(vao).SetMaterial(barrelMat);
-			obj4.get<Transform>().SetLocalPosition(0.0f, 0.0f, 1.0f);
+			obj4.get<Transform>().SetLocalPosition(-7.0f, -10.0f, -0.1f);
 			obj4.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
 			obj4.get<Transform>().SetLocalScale(glm::vec3(0.2f));
+		}
+
+		GameObject obj5 = scene->CreateEntity("Barrel2");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/barrel.obj");
+			obj5.emplace<RendererComponent>().SetMesh(vao).SetMaterial(barrelMat);
+			obj5.get<Transform>().SetLocalPosition(-9.0f, -8.0f, -0.1f);
+			obj5.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
+			obj5.get<Transform>().SetLocalScale(glm::vec3(0.2f));
+		}
+
+		GameObject obj6 = scene->CreateEntity("Tree");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
+			obj6.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
+			obj6.get<Transform>().SetLocalPosition(7.0f, -3.0f, 0.45f);
+			obj6.get<Transform>().SetLocalScale(glm::vec3(0.1f));
+		}
+
+		GameObject obj7 = scene->CreateEntity("Straw");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/straw.obj");
+			obj7.emplace<RendererComponent>().SetMesh(vao).SetMaterial(strawMat);
+			obj7.get<Transform>().SetLocalPosition(-8.0f, 0.0f, 0.9f);
+			obj7.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
+			obj7.get<Transform>().SetLocalScale(glm::vec3(0.03f));
+		}
+
+		GameObject obj8 = scene->CreateEntity("Sword");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/sword.obj");
+			obj8.emplace<RendererComponent>().SetMesh(vao).SetMaterial(swordMat);
+			obj8.get<Transform>().SetLocalPosition(7.0f, 5.0f, 2.8f);
+			obj8.get<Transform>().SetLocalScale(glm::vec3(0.09f));		
+		}
+
+		GameObject obj9 = scene->CreateEntity("Horse");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/horse.obj");
+			obj9.emplace<RendererComponent>().SetMesh(vao).SetMaterial(horseMat);
+			obj9.get<Transform>().SetLocalPosition(0.0f, 0.0f, 0.0f);
+			obj9.get<Transform>().SetLocalScale(glm::vec3(0.002f));
 		}
 
 		/*std::vector<glm::vec2> allAvoidAreasFrom = { glm::vec2(-4.0f, -4.0f) };
