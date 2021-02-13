@@ -33,6 +33,8 @@ int main() {
 	//int selectedVao = 0; // select cube by default
 	//std::vector<GameObject> controllables;
 
+	bool toggleTextures = false;
+
 	BackendHandler::InitAll();
 
 	// Let OpenGL know that we want debug output, and route it to our handler function
@@ -45,10 +47,10 @@ int main() {
 	// Push another scope so most memory should be freed *before* we exit the app
 	{
 		#pragma region Shader and ImGui
-		/*Shader::sptr passthroughShader = Shader::Create();
+		Shader::sptr passthroughShader = Shader::Create();
 		passthroughShader->LoadShaderPartFromFile("shaders/passthrough_vert.glsl", GL_VERTEX_SHADER);
 		passthroughShader->LoadShaderPartFromFile("shaders/passthrough_frag.glsl", GL_FRAGMENT_SHADER);
-		passthroughShader->Link();*/
+		passthroughShader->Link();
 
 		// Load our shaders
 		Shader::sptr shader = Shader::Create();
@@ -88,6 +90,17 @@ int main() {
 		
 		// We'll add some ImGui controls to control our shader
 		BackendHandler::imGuiCallbacks.push_back([&]() {
+
+			if (ImGui::CollapsingHeader("Basic Lighting"))
+			{
+
+			}
+
+			if (ImGui::Button("Toggle Textures"))
+			{
+				toggleTextures = true;
+			}
+
 			/*if (ImGui::CollapsingHeader("Effect controls"))
 			{
 				ImGui::SliderInt("Chosen Effect", &activeEffect, 0, effects.size() - 1);
@@ -129,8 +142,8 @@ int main() {
 						temp->SetLUT(LUT3D(std::string(input)));
 					}
 				}
-			}
-			if (ImGui::CollapsingHeader("Environment generation"))
+			}*/
+			/*if (ImGui::CollapsingHeader("Environment generation"))
 			{
 				if (ImGui::Button("Regenerate Environment", ImVec2(200.0f, 40.0f)))
 				{
@@ -201,10 +214,10 @@ int main() {
 		//Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
 		Texture2D::sptr grass = Texture2D::LoadFromFile("images/grass.jpg");
 		Texture2D::sptr noSpec = Texture2D::LoadFromFile("images/grassSpec.png");
-		/*Texture2D::sptr box = Texture2D::LoadFromFile("images/box.bmp");
-		Texture2D::sptr boxSpec = Texture2D::LoadFromFile("images/box-reflections.bmp");
-		Texture2D::sptr simpleFlora = Texture2D::LoadFromFile("images/SimpleFlora.png");
-		LUT3D testCube("cubes/BrightenedCorrection.cube");*/
+		//Texture2D::sptr box = Texture2D::LoadFromFile("images/box.bmp");
+		//Texture2D::sptr boxSpec = Texture2D::LoadFromFile("images/box-reflections.bmp");
+		//Texture2D::sptr simpleFlora = Texture2D::LoadFromFile("images/SimpleFlora.png");
+		//LUT3D testCube("cubes/BrightenedCorrection.cube");
 
 		Texture2D::sptr house = Texture2D::LoadFromFile("images/houseTex.png");
 		Texture2D::sptr barrel = Texture2D::LoadFromFile("images/wood.jpg");
@@ -547,6 +560,12 @@ int main() {
 				for (const KeyPressWatcher& watcher : keyToggles) {
 					watcher.Poll(BackendHandler::window);
 				}
+			}
+
+			if (toggleTextures)
+			{
+				//obj1.emplace<RendererComponent>().SetMesh(vao).SetMaterial(grassMat);
+				grassMat->Set("s_Diffuse", texture2);
 			}
 
 			// Iterate over all the behaviour binding components
