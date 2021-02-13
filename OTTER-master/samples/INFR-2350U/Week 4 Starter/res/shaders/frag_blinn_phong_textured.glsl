@@ -97,10 +97,5 @@ void main() {
 			break;
 	}
 
-//	vec3 result = (
-//		(u_AmbientCol * u_AmbientStrength) + // global ambient light
-//		(ambient + diffuse + specular) * attenuation // light factors from our single light
-//		) * inColor * textureColor.rgb; // Object color
-
 	frag_color = vec4(result, textureColor.a);
 }
