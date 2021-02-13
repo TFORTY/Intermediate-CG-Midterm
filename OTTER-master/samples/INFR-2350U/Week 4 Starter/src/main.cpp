@@ -84,14 +84,16 @@ int main() {
 
 		shader->SetUniform("u_Condition", condition);
 
-		/*PostEffect* basicEffect;
+		PostEffect* basicEffect;
 
 		int activeEffect = 0;
 		std::vector<PostEffect*> effects;
 
 		SepiaEffect* sepiaEffect;
 		GreyscaleEffect* greyscaleEffect;
-		ColorCorrectEffect* colorCorrectEffect;*/
+		ColorCorrectEffect* colorCorrectEffect;
+
+		BloomEffect* bloomEffect;
 		
 		// We'll add some ImGui controls to control our shader
 		BackendHandler::imGuiCallbacks.push_back([&]() {
@@ -172,11 +174,17 @@ int main() {
 				}
 			}
 
-			/*if (ImGui::CollapsingHeader("Effect controls"))
+			if (ImGui::CollapsingHeader("Effect controls"))
 			{
 				ImGui::SliderInt("Chosen Effect", &activeEffect, 0, effects.size() - 1);
 
 				if (activeEffect == 0)
+				{
+					ImGui::Text("Active Effect: No Effect");
+					PostEffect* temp = (PostEffect*)effects[activeEffect];
+				}
+
+				if (activeEffect == 1)
 				{
 					ImGui::Text("Active Effect: Sepia Effect");
 
@@ -188,7 +196,7 @@ int main() {
 						temp->SetIntensity(intensity);
 					}
 				}
-				if (activeEffect == 1)
+				if (activeEffect == 2)
 				{
 					ImGui::Text("Active Effect: Greyscale Effect");
 					
@@ -200,7 +208,7 @@ int main() {
 						temp->SetIntensity(intensity);
 					}
 				}
-				if (activeEffect == 2)
+				if (activeEffect == 3)
 				{
 					ImGui::Text("Active Effect: Color Correct Effect");
 
@@ -213,7 +221,12 @@ int main() {
 						temp->SetLUT(LUT3D(std::string(input)));
 					}
 				}
-			}*/
+				if (activeEffect == 4)
+				{
+					ImGui::Text("Active Effect: Bloom Effect");
+					BloomEffect* temp = (BloomEffect*)effects[activeEffect];
+				}
+			}
 
 			/*if (ImGui::CollapsingHeader("Environment generation"))
 			{
@@ -522,7 +535,7 @@ int main() {
 			BehaviourBinding::Bind<CameraControlBehaviour>(cameraObject);
 		}
 
-		/*int width, height;
+		int width, height;
 		glfwGetWindowSize(BackendHandler::window, &width, &height);
 
 		GameObject framebufferObject = scene->CreateEntity("Basic Effect");
@@ -530,6 +543,7 @@ int main() {
 			basicEffect = &framebufferObject.emplace<PostEffect>();
 			basicEffect->Init(width, height);
 		}
+		effects.push_back(basicEffect);
 
 		GameObject sepiaEffectObject = scene->CreateEntity("Sepia Effect");
 		{
@@ -550,7 +564,14 @@ int main() {
 			colorCorrectEffect = &colorCorrectEffectObject.emplace<ColorCorrectEffect>();
 			colorCorrectEffect->Init(width, height);
 		}
-		effects.push_back(colorCorrectEffect);*/
+		effects.push_back(colorCorrectEffect);
+
+		GameObject bloomEffectObject = scene->CreateEntity("Bloom Effect");
+		{
+			bloomEffect = &bloomEffectObject.emplace<BloomEffect>();
+			bloomEffect->Init(width, height);
+		}
+		effects.push_back(bloomEffect);
 
 		#pragma endregion 
 		//////////////////////////////////////////////////////////////////////////////////////////
@@ -677,13 +698,13 @@ int main() {
 			});
 
 			// Clear the screen
-			//basicEffect->Clear();
+			basicEffect->Clear();
 			/*greyscaleEffect->Clear();
 			sepiaEffect->Clear();*/
-			/*for (int i = 0; i < effects.size(); i++)
+			for (int i = 0; i < effects.size(); i++)
 			{
 				effects[i]->Clear();
-			}*/
+			}
 
 			glClearColor(0.08f, 0.17f, 0.31f, 1.0f);
 			glEnable(GL_DEPTH_TEST);
@@ -741,7 +762,7 @@ int main() {
 			Shader::sptr current = nullptr;
 			ShaderMaterial::sptr currentMat = nullptr;
 
-			//basicEffect->BindBuffer(0);
+			basicEffect->BindBuffer(0);
 
 			// Iterate over the render group components and draw them
 			renderGroup.each( [&](entt::entity e, RendererComponent& renderer, Transform& transform) {
@@ -760,11 +781,11 @@ int main() {
 				BackendHandler::RenderVAO(renderer.Material->Shader, renderer.Mesh, viewProjection, transform);
 			});
 
-			//basicEffect->UnbindBuffer();
+			basicEffect->UnbindBuffer();
 
-			//effects[activeEffect]->ApplyEffect(basicEffect);
+			effects[activeEffect]->ApplyEffect(basicEffect);
 			
-			//effects[activeEffect]->DrawToScreen();
+			effects[activeEffect]->DrawToScreen();
 		
 			// Draw our ImGui content
 			BackendHandler::RenderImGui();
