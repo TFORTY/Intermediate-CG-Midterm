@@ -64,8 +64,6 @@ void main() {
 	vec4 textureColor2 = texture(s_Diffuse2, inUV);
 	vec4 textureColor = mix(textureColor1, textureColor2, u_TextureMix);
 
-	vec3 rainbow;
-
 	vec3 result;
 
 	switch(u_Condition)

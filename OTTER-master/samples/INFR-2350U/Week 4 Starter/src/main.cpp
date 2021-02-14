@@ -31,10 +31,9 @@ int main() {
 	float fpsBuffer[128];
 	float minFps, maxFps, avgFps;
 
+	//Variables for toggles
 	bool isTexturesToggled = true;
 	int toggleMode = 3;
-
-	bool rainbowOn = false;
 
 	BackendHandler::InitAll();
 
@@ -362,6 +361,7 @@ int main() {
 		horseMat->Set("u_Shininess", 2.0f);
 		horseMat->Set("u_TextureMix", 0.0f);
 
+		//Objects
 		GameObject groundObj = scene->CreateEntity("Ground"); 
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/plane.obj");
@@ -551,6 +551,7 @@ int main() {
 			BehaviourBinding::Bind<CameraControlBehaviour>(cameraObject);
 		}
 
+		//Post-Processing Effects
 		int width, height;
 		glfwGetWindowSize(BackendHandler::window, &width, &height);
 
@@ -566,7 +567,7 @@ int main() {
 			sepiaEffect = &sepiaEffectObject.emplace<SepiaEffect>();
 			sepiaEffect->Init(width, height);
 		}
-		effects.push_back(sepiaEffect);
+		effects.push_back(sepiaEffect); 
 
 		GameObject greyscaleEffectObject = scene->CreateEntity("Greyscale Effect");
 		{
