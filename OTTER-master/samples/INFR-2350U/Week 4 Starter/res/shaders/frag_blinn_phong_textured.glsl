@@ -64,6 +64,8 @@ void main() {
 	vec4 textureColor2 = texture(s_Diffuse2, inUV);
 	vec4 textureColor = mix(textureColor1, textureColor2, u_TextureMix);
 
+	vec3 rainbow;
+
 	vec3 result;
 
 	switch(u_Condition)
@@ -94,6 +96,17 @@ void main() {
 			(u_AmbientCol * u_AmbientLightStrength) + 
 			(ambient + diffuse + specular) * attenuation
 			) * inColor * textureColor.rgb;
+			break;
+
+		//Ambient + Specular + Diffuse Lighting + Bloom
+		case 4:
+			result = (
+			(u_AmbientCol * u_AmbientLightStrength) + 
+			(ambient + diffuse + specular) * attenuation
+			) * inColor * textureColor.rgb;
+			break;
+		case 5:
+			frag_color = vec4(1.0 - texture(s_Diffuse, inUV).rgb, 1.0);
 			break;
 	}
 

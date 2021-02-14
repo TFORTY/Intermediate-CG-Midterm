@@ -36,6 +36,8 @@ int main() {
 	bool isTexturesToggled = true;
 	int toggleMode = 3;
 
+	bool rainbowOn = false;
+
 	BackendHandler::InitAll();
 
 	// Let OpenGL know that we want debug output, and route it to our handler function
@@ -105,29 +107,40 @@ int main() {
 				{
 					toggleMode = 0;
 					shader->SetUniform("u_Condition", 0); 
+					activeEffect = 0;
 				}
 				//Toggles on ambient lighting only
 				if (ImGui::Button("Ambient Only"))
 				{
 					toggleMode = 1;
 					shader->SetUniform("u_Condition", 1);
+					activeEffect = 0;
 				}
 				//Toggles on specular lighting only
 				if (ImGui::Button("Specular Only"))
 				{
 					toggleMode = 2;
 					shader->SetUniform("u_Condition", 2);
+					activeEffect = 0;
 				}
-				//Toggles on ambient + specular + diffuse lighitng (DEFAULT)
+				//Toggles on ambient + specular + diffuse lighitng (DEFAULT) 
 				if (ImGui::Button("Ambient + Specular + Diffuse"))
 				{
 					toggleMode = 3;
 					shader->SetUniform("u_Condition", 3);
+					activeEffect = 0;
+				}
+				//Ambient + Specular + Diffuse + Bloom
+				if (ImGui::Button("Ambient + Specular + Diffuse + Bloom"))
+				{
+					toggleMode = 4;
+					shader->SetUniform("u_Condition", 3);
+					activeEffect = 4;
 				}
 				//Toggles on ambient + specular + diffuse + custom lighting 
 				if (ImGui::Button("Ambient + Specular + Diffuse + Custom"))
 				{
-					//Figure this out
+				
 				}
 
 				//Displays which lighting toggle is on
@@ -151,6 +164,11 @@ int main() {
 				{
 					ImGui::SameLine(0.0f, 1.0f);
 					ImGui::Text("Ambient + Specular + Diffuse");
+				}
+				else if (toggleMode == 4)
+				{
+					ImGui::SameLine(0.0f, 1.0f);
+					ImGui::Text("Ambient + Specular + Diffuse + Bloom");
 				}
 
 				//Toggles textures on/off
@@ -227,17 +245,12 @@ int main() {
 
 					BloomEffect* temp = (BloomEffect*)effects[activeEffect];
 					float brightnessThreshold = temp->GetThreshold();
-					//float blurValue = temp->GetDownscale();
 					int blurValue = temp->GetPasses();
 
 					if (ImGui::SliderFloat("Brightness Threshold", &brightnessThreshold, 1.0f, 0.0f))
 					{
 						temp->SetThreshold(brightnessThreshold);
 					}
-					/*if (ImGui::SliderFloat("Blur Value", &blurValue, 0.0f, 5.0f))
-					{
-						temp->SetThreshold(blurValue);
-					}*/
 					if (ImGui::SliderInt("Blur Value", &blurValue, 0.0f, 10.f))
 					{
 						temp->SetPasses(blurValue);
