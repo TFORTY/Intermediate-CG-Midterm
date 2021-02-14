@@ -31,7 +31,7 @@ void BloomEffect::Init(unsigned width, unsigned height)
 	int index2 = int(_shaders.size());
 	_shaders.push_back(Shader::Create());
 	_shaders[index2]->LoadShaderPartFromFile("shaders/passthrough_vert.glsl", GL_VERTEX_SHADER);
-	_shaders[index2]->LoadShaderPartFromFile("shaders/passthrough_frag.glsl", GL_FRAGMENT_SHADER);
+	_shaders[index2]->LoadShaderPartFromFile("shaders/PassThrough_frag.glsl", GL_FRAGMENT_SHADER);
 	_shaders[index2]->Link();
 	index2++;
 

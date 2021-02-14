@@ -124,8 +124,8 @@ int main() {
 					toggleMode = 3;
 					shader->SetUniform("u_Condition", 3);
 				}
-				//Toggles on the lighting with bloom effect
-				if (ImGui::Button("Ambient + Specular + Diffuse + Bloom"))
+				//Toggles on ambient + specular + diffuse + custom lighting 
+				if (ImGui::Button("Ambient + Specular + Diffuse + Custom"))
 				{
 					//Figure this out
 				}
@@ -224,7 +224,24 @@ int main() {
 				if (activeEffect == 4)
 				{
 					ImGui::Text("Active Effect: Bloom Effect");
+
 					BloomEffect* temp = (BloomEffect*)effects[activeEffect];
+					float brightnessThreshold = temp->GetThreshold();
+					//float blurValue = temp->GetDownscale();
+					int blurValue = temp->GetPasses();
+
+					if (ImGui::SliderFloat("Brightness Threshold", &brightnessThreshold, 1.0f, 0.0f))
+					{
+						temp->SetThreshold(brightnessThreshold);
+					}
+					/*if (ImGui::SliderFloat("Blur Value", &blurValue, 0.0f, 5.0f))
+					{
+						temp->SetThreshold(blurValue);
+					}*/
+					if (ImGui::SliderInt("Blur Value", &blurValue, 0.0f, 10.f))
+					{
+						temp->SetPasses(blurValue);
+					}
 				}
 			}
 
