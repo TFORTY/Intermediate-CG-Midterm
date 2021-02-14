@@ -63,14 +63,14 @@ int main() {
 
 		glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 5.0f);
 		glm::vec3 lightCol = glm::vec3(0.9f, 0.85f, 0.5f);
-		float     lightAmbientPow = 0.05f;
-		float     lightSpecularPow = 1.0f;
+		float     lightAmbientPow = 0.09f;
+		float     lightSpecularPow = 2.0f;
 		glm::vec3 ambientCol = glm::vec3(1.0f);
 		float     ambientPow = 0.1f;
 		float     lightLinearFalloff = 0.09f;
 		float     lightQuadraticFalloff = 0.032f;
 
-		int condition = 3;
+		int condition = 0;
 
 		// These are our application / scene level uniforms that don't necessarily update
 		// every frame
@@ -136,11 +136,6 @@ int main() {
 					toggleMode = 4;
 					shader->SetUniform("u_Condition", 3);
 					activeEffect = 4;
-				}
-				//Toggles on ambient + specular + diffuse + custom lighting 
-				if (ImGui::Button("Ambient + Specular + Diffuse + Custom"))
-				{
-				
 				}
 
 				//Displays which lighting toggle is on
@@ -274,8 +269,8 @@ int main() {
 				if (ImGui::SliderFloat("Fixed Ambient Power", &ambientPow, 0.01f, 1.0f)) {
 					shader->SetUniform("u_AmbientStrength", ambientPow);
 				}
-			}
-			if (ImGui::CollapsingHeader("Light Level Lighting Settings"))
+			}*/
+			/*if (ImGui::CollapsingHeader("Light Level Lighting Settings"))
 			{
 				if (ImGui::DragFloat3("Light Pos", glm::value_ptr(lightPos), 0.01f, -10.0f, 10.0f)) {
 					shader->SetUniform("u_LightPos", lightPos);
@@ -286,7 +281,7 @@ int main() {
 				if (ImGui::SliderFloat("Light Ambient Power", &lightAmbientPow, 0.0f, 1.0f)) {
 					shader->SetUniform("u_AmbientLightStrength", lightAmbientPow);
 				}
-				if (ImGui::SliderFloat("Light Specular Power", &lightSpecularPow, 0.0f, 1.0f)) {
+				if (ImGui::SliderFloat("Light Specular Power", &lightSpecularPow, 0.0f, 5.0f)) {
 					shader->SetUniform("u_SpecularLightStrength", lightSpecularPow);
 				}
 				if (ImGui::DragFloat("Light Linear Falloff", &lightLinearFalloff, 0.01f, 0.0f, 1.0f)) {
@@ -341,8 +336,6 @@ int main() {
 		Texture2D::sptr tree = Texture2D::LoadFromFile("images/tree.png");
 		Texture2D::sptr straw = Texture2D::LoadFromFile("images/straw.jpg");
 		Texture2D::sptr strawBump = Texture2D::LoadFromFile("images/strawBump.jpg");
-		Texture2D::sptr sword = Texture2D::LoadFromFile("images/swordTex.png");
-		Texture2D::sptr swordNormal = Texture2D::LoadFromFile("images/swordNormal.png");
 		Texture2D::sptr horse = Texture2D::LoadFromFile("images/horse.jpg");
 
 		// Load the cube map
@@ -423,13 +416,6 @@ int main() {
 		strawMat->Set("u_Shininess", 2.0f);
 		strawMat->Set("u_TextureMix", 0.25f);
 
-		ShaderMaterial::sptr swordMat = ShaderMaterial::Create();
-		swordMat->Shader = shader;
-		swordMat->Set("s_Diffuse", sword);
-		swordMat->Set("s_Diffuse2", swordNormal);
-		swordMat->Set("u_Shininess", 2.0f);
-		swordMat->Set("u_TextureMix", 0.25f);
-
 		ShaderMaterial::sptr horseMat = ShaderMaterial::Create();
 		horseMat->Shader = shader;
 		horseMat->Set("s_Diffuse", horse);
@@ -469,11 +455,11 @@ int main() {
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/house.obj");
 			houseObj.emplace<RendererComponent>().SetMesh(vao).SetMaterial(houseMat);
-			houseObj.get<Transform>().SetLocalPosition(0.0f, -16.0f, 0.1f);
+			houseObj.get<Transform>().SetLocalPosition(0.0f, -12.0f, 0.1f);
 			houseObj.get<Transform>().SetLocalRotation(90.0f, 0.0f, 180.0f);
 		}
 
-		GameObject barrelObj = scene->CreateEntity("Barrel");
+		/*GameObject barrelObj = scene->CreateEntity("Barrel");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/barrel.obj");
 			barrelObj.emplace<RendererComponent>().SetMesh(vao).SetMaterial(barrelMat);
@@ -489,15 +475,47 @@ int main() {
 			barrelObj2.get<Transform>().SetLocalPosition(-9.0f, -8.0f, -0.1f);
 			barrelObj2.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
 			barrelObj2.get<Transform>().SetLocalScale(glm::vec3(0.2f));
-		}
+		}*/
 
 		GameObject treeObj = scene->CreateEntity("Tree");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
 			treeObj.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
-			treeObj.get<Transform>().SetLocalPosition(7.0f, -3.0f, 0.45f);
+			treeObj.get<Transform>().SetLocalPosition(13.0f, -12.0f, 0.45f);
 			treeObj.get<Transform>().SetLocalScale(glm::vec3(0.1f));
 		}
+
+		GameObject treeObj2 = scene->CreateEntity("Tree2");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
+			treeObj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
+			treeObj2.get<Transform>().SetLocalPosition(-13.0f, -12.0f, 0.45f);
+			treeObj2.get<Transform>().SetLocalScale(glm::vec3(0.1f));
+		}
+
+		/*GameObject treeObj2 = scene->CreateEntity("Tree2");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
+			treeObj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
+			treeObj2.get<Transform>().SetLocalPosition(15.0f, -7.f, 0.45f);
+			treeObj2.get<Transform>().SetLocalScale(glm::vec3(0.1f));
+		}
+
+		GameObject treeObj3 = scene->CreateEntity("Tree3");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
+			treeObj3.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
+			treeObj3.get<Transform>().SetLocalPosition(10.0f, -5.f, 0.45f);
+			treeObj3.get<Transform>().SetLocalScale(glm::vec3(0.1f));
+		}*/
+
+		/*GameObject treeObj2 = scene->CreateEntity("Tree");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
+			treeObj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
+			treeObj2.get<Transform>().SetLocalPosition(9.0f, 0.0f, 0.45f);
+			treeObj2.get<Transform>().SetLocalScale(glm::vec3(0.1f));
+		}*/
 
 		GameObject strawObj = scene->CreateEntity("Straw");
 		{
@@ -508,14 +526,6 @@ int main() {
 			strawObj.get<Transform>().SetLocalScale(glm::vec3(0.03f));
 		}
 
-		GameObject swordObj = scene->CreateEntity("Sword");
-		{
-			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/sword.obj");
-			swordObj.emplace<RendererComponent>().SetMesh(vao).SetMaterial(swordMat);
-			swordObj.get<Transform>().SetLocalPosition(7.0f, 5.0f, 2.8f);
-			swordObj.get<Transform>().SetLocalScale(glm::vec3(0.09f));		
-		}
-
 		GameObject horseObj = scene->CreateEntity("Horse");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/horse.obj");
@@ -523,13 +533,13 @@ int main() {
 			horseObj.get<Transform>().SetLocalPosition(0.0f, 0.0f, 0.0f);
 			horseObj.get<Transform>().SetLocalScale(glm::vec3(0.002f));
 
-			auto pathing = BehaviourBinding::Bind<FollowPathBehaviour>(horseObj);
+			/*auto pathing = BehaviourBinding::Bind<FollowPathBehaviour>(horseObj);
 			pathing->Points.push_back({ 0.f, -7.f, 0.f });
 			pathing->Points.push_back({ 12.f, -7.f, 0.f });
 			pathing->Points.push_back({ 12.f, 10.f, 0.f });
 			pathing->Points.push_back({ 0.f, 10.f, 0.f });
 			pathing->Points.push_back({ 0.f, 0.f, 0.f });
-			pathing->Speed = 6.0f;
+			pathing->Speed = 6.0f;*/
 		}
 
 		/*std::vector<glm::vec2> allAvoidAreasFrom = { glm::vec2(-4.0f, -4.0f) };
@@ -702,7 +712,6 @@ int main() {
 				barrelMat->Set("s_Diffuse", texture2);
 				treeMat->Set("s_Diffuse", texture2);
 				strawMat->Set("s_Diffuse", texture2);		
-				swordMat->Set("s_Diffuse", texture2);		
 				horseMat->Set("s_Diffuse", texture2);		
 			}
 			//Returns the difuse material to its original texture
@@ -713,7 +722,6 @@ int main() {
 				barrelMat->Set("s_Diffuse", barrel);
 				treeMat->Set("s_Diffuse", tree);
 				strawMat->Set("s_Diffuse", straw);
-				swordMat->Set("s_Diffuse", sword);
 				horseMat->Set("s_Diffuse", horse);
 			}
 
@@ -753,7 +761,7 @@ int main() {
 			glm::mat4 viewProjection = projection * view;
 
 			//Rotates the horse when moving
-			if (horseObj.get<Transform>().GetLocalPosition().y <= -6.9f)
+		/*	if (horseObj.get<Transform>().GetLocalPosition().y <= -6.9f)
 			{
 				horseObj.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 90.f));
 			}
@@ -768,7 +776,7 @@ int main() {
 			else
 			{
 				horseObj.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 0.f));
-			}
+			}*/
 
 			// Sort the renderers by shader and material, we will go for a minimizing context switches approach here,
 			// but you could for instance sort front to back to optimize for fill rate if you have intensive fragment shaders

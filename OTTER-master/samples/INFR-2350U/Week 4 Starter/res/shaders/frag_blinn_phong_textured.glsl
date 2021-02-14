@@ -105,9 +105,6 @@ void main() {
 			(ambient + diffuse + specular) * attenuation
 			) * inColor * textureColor.rgb;
 			break;
-		case 5:
-			frag_color = vec4(1.0 - texture(s_Diffuse, inUV).rgb, 1.0);
-			break;
 	}
 
 	frag_color = vec4(result, textureColor.a);

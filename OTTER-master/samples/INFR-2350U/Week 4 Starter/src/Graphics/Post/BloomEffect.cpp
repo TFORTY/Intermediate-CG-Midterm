@@ -101,7 +101,7 @@ void BloomEffect::ApplyEffect(PostEffect* buffer)
 		UnbindShader();
 	}
 
-	//Composite 
+	//Composite scene and bloom
 	BindShader(4);
 	buffer->BindColorAsTexture(0, 0, 0);
 	BindColorAsTexture(1, 0, 1);
