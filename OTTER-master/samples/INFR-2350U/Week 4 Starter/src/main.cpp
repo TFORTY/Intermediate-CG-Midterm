@@ -30,8 +30,6 @@ int main() {
 	int frameIx = 0;
 	float fpsBuffer[128];
 	float minFps, maxFps, avgFps;
-	//int selectedVao = 0; // select cube by default
-	//std::vector<GameObject> controllables;
 
 	bool isTexturesToggled = true;
 	int toggleMode = 3;
@@ -62,9 +60,9 @@ int main() {
 		shader->Link();
 
 		glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 5.0f);
-		glm::vec3 lightCol = glm::vec3(0.9f, 0.85f, 0.5f);
+		glm::vec3 lightCol = glm::vec3(1.0f);
 		float     lightAmbientPow = 0.09f;
-		float     lightSpecularPow = 2.0f;
+		float     lightSpecularPow = 1.0f;
 		glm::vec3 ambientCol = glm::vec3(1.0f);
 		float     ambientPow = 0.1f;
 		float     lightLinearFalloff = 0.09f;
@@ -253,50 +251,6 @@ int main() {
 				}
 			}
 
-			/*if (ImGui::CollapsingHeader("Environment generation"))
-			{
-				if (ImGui::Button("Regenerate Environment", ImVec2(200.0f, 40.0f)))
-				{
-					EnvironmentGenerator::RegenerateEnvironment();
-				}
-			}*/
-
-			/*if (ImGui::CollapsingHeader("Scene Level Lighting Settings"))
-			{
-				if (ImGui::ColorPicker3("Ambient Color", glm::value_ptr(ambientCol))) {
-					shader->SetUniform("u_AmbientCol", ambientCol);
-				}
-				if (ImGui::SliderFloat("Fixed Ambient Power", &ambientPow, 0.01f, 1.0f)) {
-					shader->SetUniform("u_AmbientStrength", ambientPow);
-				}
-			}*/
-			/*if (ImGui::CollapsingHeader("Light Level Lighting Settings"))
-			{
-				if (ImGui::DragFloat3("Light Pos", glm::value_ptr(lightPos), 0.01f, -10.0f, 10.0f)) {
-					shader->SetUniform("u_LightPos", lightPos);
-				}
-				if (ImGui::ColorPicker3("Light Col", glm::value_ptr(lightCol))) {
-					shader->SetUniform("u_LightCol", lightCol);
-				}
-				if (ImGui::SliderFloat("Light Ambient Power", &lightAmbientPow, 0.0f, 1.0f)) {
-					shader->SetUniform("u_AmbientLightStrength", lightAmbientPow);
-				}
-				if (ImGui::SliderFloat("Light Specular Power", &lightSpecularPow, 0.0f, 5.0f)) {
-					shader->SetUniform("u_SpecularLightStrength", lightSpecularPow);
-				}
-				if (ImGui::DragFloat("Light Linear Falloff", &lightLinearFalloff, 0.01f, 0.0f, 1.0f)) {
-					shader->SetUniform("u_LightAttenuationLinear", lightLinearFalloff);
-				}
-				if (ImGui::DragFloat("Light Quadratic Falloff", &lightQuadraticFalloff, 0.01f, 0.0f, 1.0f)) {
-					shader->SetUniform("u_LightAttenuationQuadratic", lightQuadraticFalloff);
-				}
-			}*/
-
-			//auto name = controllables[selectedVao].get<GameObjectTag>().Name;
-			//ImGui::Text(name.c_str());
-			//auto behaviour = BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao]);
-			//ImGui::Checkbox("Relative Rotation", &behaviour->Relative);
-
 			ImGui::Text("Q/E -> Yaw\nLeft/Right -> Roll\nUp/Down -> Pitch\nY -> Toggle Mode");
 		
 			minFps = FLT_MAX;
@@ -321,14 +275,8 @@ int main() {
 		#pragma region TEXTURE LOADING
 
 		// Load some textures from files
-		//Texture2D::sptr stone = Texture2D::LoadFromFile("images/Stone_001_Diffuse.png");
-		//Texture2D::sptr stoneSpec = Texture2D::LoadFromFile("images/Stone_001_Specular.png");
 		Texture2D::sptr grass = Texture2D::LoadFromFile("images/grass.jpg");
 		Texture2D::sptr noSpec = Texture2D::LoadFromFile("images/grassSpec.png");
-		//Texture2D::sptr box = Texture2D::LoadFromFile("images/box.bmp");
-		//Texture2D::sptr boxSpec = Texture2D::LoadFromFile("images/box-reflections.bmp");
-		//Texture2D::sptr simpleFlora = Texture2D::LoadFromFile("images/SimpleFlora.png");
-		//LUT3D testCube("cubes/BrightenedCorrection.cube");
 
 		Texture2D::sptr house = Texture2D::LoadFromFile("images/houseTex.png");
 		Texture2D::sptr barrel = Texture2D::LoadFromFile("images/wood.jpg");
@@ -339,7 +287,6 @@ int main() {
 		Texture2D::sptr horse = Texture2D::LoadFromFile("images/horse.jpg");
 
 		// Load the cube map
-		//TextureCubeMap::sptr environmentMap = TextureCubeMap::LoadFromImages("images/cubemaps/skybox/sample.jpg");
 		TextureCubeMap::sptr environmentMap = TextureCubeMap::LoadFromImages("images/cubemaps/skybox/ToonSky.jpg"); 
 
 		// Creating an empty texture
@@ -370,13 +317,6 @@ int main() {
 			scene->Registry().group<RendererComponent>(entt::get_t<Transform>());
 
 		// Create a material and set some properties for it
-		/*ShaderMaterial::sptr stoneMat = ShaderMaterial::Create();  
-		stoneMat->Shader = shader;
-		stoneMat->Set("s_Diffuse", stone);
-		stoneMat->Set("s_Specular", stoneSpec);
-		stoneMat->Set("u_Shininess", 2.0f);
-		stoneMat->Set("u_TextureMix", 0.0f); */
-
 		ShaderMaterial::sptr noTex = ShaderMaterial::Create();
 		noTex->Shader = shader;
 		noTex->Set("s_Diffuse", texture2);
@@ -422,34 +362,11 @@ int main() {
 		horseMat->Set("u_Shininess", 2.0f);
 		horseMat->Set("u_TextureMix", 0.0f);
 
-		/*ShaderMaterial::sptr boxMat = ShaderMaterial::Create();
-		boxMat->Shader = shader;
-		boxMat->Set("s_Diffuse", box);
-		boxMat->Set("s_Specular", boxSpec);
-		boxMat->Set("u_Shininess", 8.0f);
-		boxMat->Set("u_TextureMix", 0.0f);
-
-		ShaderMaterial::sptr simpleFloraMat = ShaderMaterial::Create();
-		simpleFloraMat->Shader = shader;
-		simpleFloraMat->Set("s_Diffuse", simpleFlora);
-		simpleFloraMat->Set("s_Specular", noSpec);
-		simpleFloraMat->Set("u_Shininess", 8.0f);
-		simpleFloraMat->Set("u_TextureMix", 0.0f);*/
-
 		GameObject groundObj = scene->CreateEntity("Ground"); 
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/plane.obj");
 			groundObj.emplace<RendererComponent>().SetMesh(vao).SetMaterial(grassMat);
 		}
-
-		/*GameObject obj2 = scene->CreateEntity("monkey_quads");
-		{
-			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/monkey_quads.obj");
-			obj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(stoneMat);
-			obj2.get<Transform>().SetLocalPosition(0.0f, 0.0f, 2.0f);
-			obj2.get<Transform>().SetLocalRotation(0.0f, 0.0f, -90.0f);
-			BehaviourBinding::BindDisabled<SimpleMoveBehaviour>(obj2);
-		}*/
 
 		GameObject houseObj = scene->CreateEntity("House");
 		{
@@ -459,11 +376,11 @@ int main() {
 			houseObj.get<Transform>().SetLocalRotation(90.0f, 0.0f, 180.0f);
 		}
 
-		/*GameObject barrelObj = scene->CreateEntity("Barrel");
+		GameObject barrelObj = scene->CreateEntity("Barrel");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/barrel.obj");
 			barrelObj.emplace<RendererComponent>().SetMesh(vao).SetMaterial(barrelMat);
-			barrelObj.get<Transform>().SetLocalPosition(-7.0f, -10.0f, -0.1f);
+			barrelObj.get<Transform>().SetLocalPosition(-9.0f, -8.0f, -0.1f);
 			barrelObj.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
 			barrelObj.get<Transform>().SetLocalScale(glm::vec3(0.2f));
 		}
@@ -472,10 +389,28 @@ int main() {
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/barrel.obj");
 			barrelObj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(barrelMat);
-			barrelObj2.get<Transform>().SetLocalPosition(-9.0f, -8.0f, -0.1f);
+			barrelObj2.get<Transform>().SetLocalPosition(-12.0f, -6.0f, -0.1f);
 			barrelObj2.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
 			barrelObj2.get<Transform>().SetLocalScale(glm::vec3(0.2f));
-		}*/
+		}
+
+		GameObject barrelObj3 = scene->CreateEntity("Barrel3");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/barrel.obj");
+			barrelObj3.emplace<RendererComponent>().SetMesh(vao).SetMaterial(barrelMat);
+			barrelObj3.get<Transform>().SetLocalPosition(7.0f, -5.0f, -0.1f);
+			barrelObj3.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
+			barrelObj3.get<Transform>().SetLocalScale(glm::vec3(0.2f));
+		}
+
+		GameObject barrelObj4 = scene->CreateEntity("Barrel4");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/barrel.obj");
+			barrelObj4.emplace<RendererComponent>().SetMesh(vao).SetMaterial(barrelMat);
+			barrelObj4.get<Transform>().SetLocalPosition(14.0f, 4.0f, -0.1f);
+			barrelObj4.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
+			barrelObj4.get<Transform>().SetLocalScale(glm::vec3(0.2f));
+		}
 
 		GameObject treeObj = scene->CreateEntity("Tree");
 		{
@@ -493,72 +428,113 @@ int main() {
 			treeObj2.get<Transform>().SetLocalScale(glm::vec3(0.1f));
 		}
 
-		/*GameObject treeObj2 = scene->CreateEntity("Tree2");
-		{
-			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
-			treeObj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
-			treeObj2.get<Transform>().SetLocalPosition(15.0f, -7.f, 0.45f);
-			treeObj2.get<Transform>().SetLocalScale(glm::vec3(0.1f));
-		}
-
 		GameObject treeObj3 = scene->CreateEntity("Tree3");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
 			treeObj3.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
-			treeObj3.get<Transform>().SetLocalPosition(10.0f, -5.f, 0.45f);
+			treeObj3.get<Transform>().SetLocalPosition(15.0f, -5.0f, 0.45f);
 			treeObj3.get<Transform>().SetLocalScale(glm::vec3(0.1f));
-		}*/
+		}
 
-		/*GameObject treeObj2 = scene->CreateEntity("Tree");
+		GameObject treeObj4 = scene->CreateEntity("Tree4");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
-			treeObj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
-			treeObj2.get<Transform>().SetLocalPosition(9.0f, 0.0f, 0.45f);
-			treeObj2.get<Transform>().SetLocalScale(glm::vec3(0.1f));
-		}*/
+			treeObj4.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
+			treeObj4.get<Transform>().SetLocalPosition(-15.0f, -6.f, 0.45f);
+			treeObj4.get<Transform>().SetLocalScale(glm::vec3(0.1f));
+		}
+
+		GameObject treeObj5 = scene->CreateEntity("Tree5");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/tree.obj");
+			treeObj5.emplace<RendererComponent>().SetMesh(vao).SetMaterial(treeMat);
+			treeObj5.get<Transform>().SetLocalPosition(-15.0f, 14.f, 0.45f);
+			treeObj5.get<Transform>().SetLocalScale(glm::vec3(0.1f));
+		}
 
 		GameObject strawObj = scene->CreateEntity("Straw");
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/straw.obj");
 			strawObj.emplace<RendererComponent>().SetMesh(vao).SetMaterial(strawMat);
-			strawObj.get<Transform>().SetLocalPosition(-8.0f, 0.0f, 0.9f);
-			strawObj.get<Transform>().SetLocalRotation(90.0f, 0.0f, 0.0f);
+			strawObj.get<Transform>().SetLocalPosition(-12.0f, 3.0f, 0.9f);
+			strawObj.get<Transform>().SetLocalRotation(90.0f, 0.0f, 90.0f);
 			strawObj.get<Transform>().SetLocalScale(glm::vec3(0.03f));
 		}
 
-		GameObject horseObj = scene->CreateEntity("Horse");
+		GameObject strawObj2 = scene->CreateEntity("Straw2");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/straw.obj");
+			strawObj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(strawMat);
+			strawObj2.get<Transform>().SetLocalPosition(-12.0f, 10.0f, 0.9f);
+			strawObj2.get<Transform>().SetLocalRotation(90.0f, 0.0f, 90.0f);
+			strawObj2.get<Transform>().SetLocalScale(glm::vec3(0.03f));
+		}
+
+		GameObject strawObj3 = scene->CreateEntity("Straw3");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/straw.obj");
+			strawObj3.emplace<RendererComponent>().SetMesh(vao).SetMaterial(strawMat);
+			strawObj3.get<Transform>().SetLocalPosition(9.0f, 3.0f, 0.9f);
+			strawObj3.get<Transform>().SetLocalRotation(90.0f, 0.0f, 45.0f);
+			strawObj3.get<Transform>().SetLocalScale(glm::vec3(0.03f));
+		}
+
+		GameObject horseObj = scene->CreateEntity("Horse"); 
 		{
 			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/horse.obj");
 			horseObj.emplace<RendererComponent>().SetMesh(vao).SetMaterial(horseMat);
-			horseObj.get<Transform>().SetLocalPosition(0.0f, 0.0f, 0.0f);
+			horseObj.get<Transform>().SetLocalPosition(13.0f, 0.0f, 0.0f);
+			horseObj.get<Transform>().SetLocalRotation(0.0f, 0.0f, 225.0f);
 			horseObj.get<Transform>().SetLocalScale(glm::vec3(0.002f));
-
-			/*auto pathing = BehaviourBinding::Bind<FollowPathBehaviour>(horseObj);
-			pathing->Points.push_back({ 0.f, -7.f, 0.f });
-			pathing->Points.push_back({ 12.f, -7.f, 0.f });
-			pathing->Points.push_back({ 12.f, 10.f, 0.f });
-			pathing->Points.push_back({ 0.f, 10.f, 0.f });
-			pathing->Points.push_back({ 0.f, 0.f, 0.f });
-			pathing->Speed = 6.0f;*/
 		}
 
-		/*std::vector<glm::vec2> allAvoidAreasFrom = { glm::vec2(-4.0f, -4.0f) };
-		std::vector<glm::vec2> allAvoidAreasTo = { glm::vec2(4.0f, 4.0f) };
+		GameObject horseObj2 = scene->CreateEntity("Horse2");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/horse.obj");
+			horseObj2.emplace<RendererComponent>().SetMesh(vao).SetMaterial(horseMat);
+			horseObj2.get<Transform>().SetLocalPosition(-14.0f, 3.0f, 0.0f);
+			horseObj2.get<Transform>().SetLocalRotation(0.0f, 0.0f, 90.0f);
+			horseObj2.get<Transform>().SetLocalScale(glm::vec3(0.002f));
+		}
 
-		std::vector<glm::vec2> rockAvoidAreasFrom = { glm::vec2(-3.0f, -3.0f), glm::vec2(-19.0f, -19.0f), glm::vec2(5.0f, -19.0f),
-														glm::vec2(-19.0f, 5.0f), glm::vec2(-19.0f, -19.0f) };
-		std::vector<glm::vec2> rockAvoidAreasTo = { glm::vec2(3.0f, 3.0f), glm::vec2(19.0f, -5.0f), glm::vec2(19.0f, 19.0f),
-														glm::vec2(19.0f, 19.0f), glm::vec2(-5.0f, 19.0f) };
-		glm::vec2 spawnFromHere = glm::vec2(-19.0f, -19.0f);
-		glm::vec2 spawnToHere = glm::vec2(19.0f, 19.0f);
+		GameObject horseObj3 = scene->CreateEntity("Horse3");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/horse.obj");
+			horseObj3.emplace<RendererComponent>().SetMesh(vao).SetMaterial(horseMat);
+			horseObj3.get<Transform>().SetLocalPosition(-14.0f, 10.0f, 0.0f);
+			horseObj3.get<Transform>().SetLocalRotation(0.0f, 0.0f, 90.0f);
+			horseObj3.get<Transform>().SetLocalScale(glm::vec3(0.002f));
+		}
 
-		EnvironmentGenerator::AddObjectToGeneration("models/simplePine.obj", simpleFloraMat, 150,
-			spawnFromHere, spawnToHere, allAvoidAreasFrom, allAvoidAreasTo);
-		EnvironmentGenerator::AddObjectToGeneration("models/simpleTree.obj", simpleFloraMat, 150,
-			spawnFromHere, spawnToHere, allAvoidAreasFrom, allAvoidAreasTo);
-		EnvironmentGenerator::AddObjectToGeneration("models/simpleRock.obj", simpleFloraMat, 40,
-			spawnFromHere, spawnToHere, rockAvoidAreasFrom, rockAvoidAreasTo);
-		EnvironmentGenerator::GenerateEnvironment();*/
+		GameObject horseObj4 = scene->CreateEntity("Horse4");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/horse.obj");
+			horseObj4.emplace<RendererComponent>().SetMesh(vao).SetMaterial(horseMat);
+			horseObj4.get<Transform>().SetLocalPosition(14.0f, 14.0f, 0.0f);
+			horseObj4.get<Transform>().SetLocalRotation(0.0f, 0.0f, -90.0f);
+			horseObj4.get<Transform>().SetLocalScale(glm::vec3(0.002f));
+
+			auto pathing = BehaviourBinding::Bind<FollowPathBehaviour>(horseObj4);
+			pathing->Points.push_back({ -7.f, 14.f, 0.f });
+			pathing->Points.push_back({ 14.f, 14.f, 0.f });
+			pathing->Speed = 6.0f;
+		}
+
+		GameObject horseObj5 = scene->CreateEntity("Horse5");
+		{
+			VertexArrayObject::sptr vao = ObjLoader::LoadFromFile("models/horse.obj");
+			horseObj5.emplace<RendererComponent>().SetMesh(vao).SetMaterial(horseMat);
+			horseObj5.get<Transform>().SetLocalPosition(4.0f, -3.0f, 0.0f);
+			horseObj5.get<Transform>().SetLocalRotation(0.0f, 0.0f, -90.0f);
+			horseObj5.get<Transform>().SetLocalScale(glm::vec3(0.002f));
+
+			auto pathing = BehaviourBinding::Bind<FollowPathBehaviour>(horseObj5);
+			pathing->Points.push_back({ -4.f, -3.f, 0.f });
+			pathing->Points.push_back({ -4.f, 6.f, 0.f });
+			pathing->Points.push_back({ 4.f, 6.f, 0.f });
+			pathing->Points.push_back({ 4.f, -3.f, 0.f });
+			pathing->Speed = 6.0f;
+		}
 
 		// Create an object to be our camera
 		GameObject cameraObject = scene->CreateEntity("Camera");
@@ -650,28 +626,6 @@ int main() {
 			// the scope. If you wanted to do some method on the class, your best bet would be to give it a method and
 			// use std::bind
 			keyToggles.emplace_back(GLFW_KEY_T, [&]() { cameraObject.get<Camera>().ToggleOrtho(); });
-
-			/*controllables.push_back(obj2);
-
-			keyToggles.emplace_back(GLFW_KEY_KP_ADD, [&]() {
-				BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao])->Enabled = false;
-				selectedVao++;
-				if (selectedVao >= controllables.size())
-					selectedVao = 0;
-				BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao])->Enabled = true;
-				});
-			keyToggles.emplace_back(GLFW_KEY_KP_SUBTRACT, [&]() {
-				BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao])->Enabled = false;
-				selectedVao--;
-				if (selectedVao < 0)
-					selectedVao = controllables.size() - 1;
-				BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao])->Enabled = true;
-				});
-
-			keyToggles.emplace_back(GLFW_KEY_Y, [&]() {
-				auto behaviour = BehaviourBinding::Get<SimpleMoveBehaviour>(controllables[selectedVao]);
-				behaviour->Relative = !behaviour->Relative;
-				});*/
 		}
 
 		// Initialize our timing instance and grab a reference for our use
@@ -737,8 +691,6 @@ int main() {
 
 			// Clear the screen
 			basicEffect->Clear();
-			/*greyscaleEffect->Clear();
-			sepiaEffect->Clear();*/
 			for (int i = 0; i < effects.size(); i++)
 			{
 				effects[i]->Clear();
@@ -761,23 +713,32 @@ int main() {
 			glm::mat4 viewProjection = projection * view;
 
 			//Rotates the horse when moving
-		/*	if (horseObj.get<Transform>().GetLocalPosition().y <= -6.9f)
+			if (horseObj4.get<Transform>().GetLocalPosition().x <= -6.9f)
 			{
-				horseObj.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 90.f));
+				horseObj4.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 90.f));
 			}
-			else if (horseObj.get<Transform>().GetLocalPosition().x >= 11.9f)
+			else if (horseObj4.get<Transform>().GetLocalPosition().x >= 13.9f)
 			{
-				horseObj.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 180.f));
+				horseObj4.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, -90.f));
 			}
-			else if (horseObj.get<Transform>().GetLocalPosition().y >= 9.9f)
+
+			if (horseObj5.get<Transform>().GetLocalPosition().x <= -3.9f)
 			{
-				horseObj.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 270.f));
+				horseObj5.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 180.f));
+			}
+			else if (horseObj5.get<Transform>().GetLocalPosition().y >= 5.9f)
+			{
+				horseObj5.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 90.f));
+			}
+			else if (horseObj5.get<Transform>().GetLocalPosition().x >= 3.9f)
+			{
+				horseObj5.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 0.f));
 			}
 			else
 			{
-				horseObj.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, 0.f));
-			}*/
-
+				horseObj5.get<Transform>().SetLocalRotation(glm::vec3(0.f, 0.f, -90.f));
+			}
+	
 			// Sort the renderers by shader and material, we will go for a minimizing context switches approach here,
 			// but you could for instance sort front to back to optimize for fill rate if you have intensive fragment shaders
 			renderGroup.sort<RendererComponent>([](const RendererComponent& l, const RendererComponent& r) {
@@ -835,8 +796,6 @@ int main() {
 
 		// Nullify scene so that we can release references
 		Application::Instance().ActiveScene = nullptr;
-		//Clean up the environment generator so we can release references
-		//EnvironmentGenerator::CleanUpPointers();
 		BackendHandler::ShutdownImGui();
 	}	
 

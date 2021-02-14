@@ -55,7 +55,7 @@ void main() {
 	vec3 h        = normalize(lightDir + viewDir);
 
 	// Get the specular power from the specular map
-	float texSpec = texture(s_Specular, inUV).x;
+	float texSpec = 1.0f;
 	float spec = pow(max(dot(N, h), 0.0), u_Shininess); // Shininess coefficient (can be a uniform)
 	vec3 specular = u_SpecularLightStrength * texSpec * spec * u_LightCol; // Can also use a specular color
 
